@@ -19,7 +19,7 @@ export default function App() {
     const axiliar = alfabeto.map(alfa => [alfa, false]);
     const [botoes, setBotoes] = useState(axiliar);
     const [gameOff, setGameOff] = useState(true);
-    const [palavraEscolhida, setPalavraEscolhida] = useState([]);
+    const [palavraEscolhida, setPalavraEscolhida] = useState("");
     const [corPalavraEscolhida, setCorPalavraEscolhida] = useState("");
     const [certas, setCertas] = useState(0);
     const [erradas, setErradas] = useState(0);
@@ -33,18 +33,19 @@ export default function App() {
     }
 
     function escolher() {
+        // setChutar= "";
         setBotoes(axiliar);
         setCertas(0);
         setErradas(0);
         setImage(forca);
         palavras.sort(baralhador);
-        const handlescolhido = palavras[0].split("");
+        const handlescolhido = palavras[0];
         setPalavraEscolhida(handlescolhido);
 
         setGameOff(false);
         setGameOffInput(false);
 
-        setRevelada(handlescolhido.map((a) => "_"));
+        setRevelada(handlescolhido.split("").map((a) => "_"));
     }
 
 
@@ -61,19 +62,17 @@ export default function App() {
 
 
     function handleBotao(letra) {
-        console.log(palavraRevelada);
+        const auxs1 = removeAcento(palavraEscolhida);
+        const auxs2 = auxs1.split("");
         const muleta = botoes.map((i) => i[0] === letra ? i = [i[0], true] : i);
-        console.log(muleta);
         setBotoes(muleta);
 
         let count = 0;
-        // const auxs1 = removeAcento(palavraEscolhida)
-        console.log(palavraEscolhida);
-        if (palavraEscolhida.includes(letra)) {
+        if (auxs2.includes(letra)) {
             const aux = palavraRevelada;
             //Dentro parentesews usar regex pesquisar normalize
-            palavraEscolhida.forEach((e, index) => { if (e === letra) { count++; 
-            aux[index] = e;
+            auxs2.forEach((e, index) => { if (e === letra) { count++; 
+            aux[index] = palavraEscolhida[index];
             } });
             setRevelada(aux);
             let soma = certas + count;
@@ -83,7 +82,6 @@ export default function App() {
                 setGameOff(true);
                 setGameOffInput(true);
 
-                console.log(palavraEscolhida.length);
                 setCorPalavraEscolhida("green");
             }
             //quando palavra escolhida inclui a letra vocẽ acertou
@@ -119,6 +117,21 @@ export default function App() {
         }
     }
 
+    function inputBotao(){
+        setRevelada(palavraEscolhida);
+        setGameOff(true);
+        setGameOffInput(true);
+        const palavra1 = removeAcento(palavraEscolhida);
+        const palavra2 = removeAcento(chutar);
+        if(palavra1 === palavra2){
+            setCorPalavraEscolhida("green");
+        } else{
+
+            setImage(pernaEsq);
+            setCorPalavraEscolhida("red");
+        }
+    }
+
     return (
         <>
             <div className="lado">
@@ -134,15 +147,15 @@ export default function App() {
                 </div>
             </div>
             <div className="botao-alfa">
-                {botoes.map((alfa) =>
-                    <button onClick={() => handleBotao(alfa[0])} disabled={gameOff ? gameOff : alfa[1]}>{alfa[0]}</button>
+                {botoes.map((alfa, index) =>
+                    <button key={index}onClick={() => handleBotao(alfa[0])} disabled={gameOff ? gameOff : alfa[1]}>{alfa[0]}</button>
                 )}
             </div>
             <div className="input">
                 <div className="lado">
                     Já sei a palavra
                     <input value={chutar} onChange={e => setChutar(e.target.value)} disabled={gameOffInput} />
-                    <button >Chutar</button>
+                    <button onClick={inputBotao} disabled={gameOffInput}>Chutar</button>
                 </div>
             </div>
         </>
