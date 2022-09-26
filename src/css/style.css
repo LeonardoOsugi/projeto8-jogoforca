@@ -52,4 +52,17 @@ input{
 .coluna{
     display:flex;
     flex-direction: column;
+    justify-content: space-around;
+}
+
+.red{
+    color: red;
+}
+
+.green{
+    color: green;
+}
+
+.fonte{
+    font-size: 50px;
 }
